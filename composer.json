@@ -1,0 +1,65 @@
+{
+    "name": "glueful/meilisearch",
+    "description": "Meilisearch full-text search integration for Glueful Framework",
+    "type": "glueful-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Tawiah Sowah",
+            "email": "michael@glueful.dev"
+        }
+    ],
+    "keywords": [
+        "search",
+        "full-text",
+        "meilisearch",
+        "indexing"
+    ],
+    "require": {
+        "php": "^8.3",
+        "meilisearch/meilisearch-php": "^1.6"
+    },
+    "require-dev": {
+        "glueful/glueful": "dev-main",
+        "phpunit/phpunit": "^10.5",
+        "squizlabs/php_codesniffer": "^3.6",
+        "phpstan/phpstan": "^1.0"
+    },
+    "homepage": "https://github.com/glueful/meilisearch",
+    "autoload": {
+        "psr-4": {
+            "Glueful\\Extensions\\Meilisearch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Glueful\\Extensions\\Meilisearch\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "phpcs": "vendor/bin/phpcs --standard=Squiz src",
+        "phpcbf": "vendor/bin/phpcbf --standard=Squiz src",
+        "analyze": "vendor/bin/phpstan analyze src --level=5",
+        "build": "php scripts/build.php",
+        "deploy": "php scripts/deploy.php"
+    },
+    "extra": {
+        "glueful": {
+            "name": "Meilisearch",
+            "displayName": "Meilisearch Search",
+            "description": "Full-text search powered by Meilisearch",
+            "version": "1.0.0",
+            "categories": ["search", "database"],
+            "publisher": "glueful-team",
+            "provider": "Glueful\\Extensions\\Meilisearch\\MeilisearchProvider",
+            "requires": {
+                "glueful": ">=1.27.0",
+                "extensions": []
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
