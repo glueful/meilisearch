@@ -106,7 +106,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Dependencies
 
 - Requires PHP 8.3+
-- Requires Glueful Framework 1.23.0+
+- Requires Glueful Framework 1.27.0+
 - Requires `meilisearch/meilisearch-php` ^1.6
 
 [Unreleased]: https://github.com/glueful/meilisearch/compare/v1.0.0...HEAD
