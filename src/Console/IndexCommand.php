@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Glueful\Extensions\Meilisearch\Console;
 
 use Glueful\Console\BaseCommand;
-use Glueful\Extensions\Meilisearch\Contracts\SearchEngineInterface;
+use Glueful\Extensions\Meilisearch\Indexing\BatchIndexer;
 use Glueful\Extensions\Meilisearch\Indexing\IndexManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,7 +42,7 @@ class IndexCommand extends BaseCommand
             return self::FAILURE;
         }
 
-        $engine = $this->getService(SearchEngineInterface::class);
+        $batchIndexer = $this->getService(BatchIndexer::class);
         $indexManager = $this->getService(IndexManager::class);
 
         $indexName = (new $modelClass([], $this->getContext()))->searchableAs();
@@ -55,17 +55,58 @@ class IndexCommand extends BaseCommand
             foreach ($idList as $id) {
                 $model = $modelClass::find($this->getContext(), $id);
                 if ($model !== null) {
-                    $engine->index($model);
+                    $model->searchableSync();
                 }
             }
             $this->success('Indexed selected IDs.');
             return self::SUCCESS;
         }
 
-        // Index all
-        $models = $modelClass::all($this->getContext());
-        foreach ($models as $model) {
-            $engine->index($model);
+        // Index all (use chunking if available)
+        if (method_exists($modelClass, 'query')) {
+            $query = $modelClass::query($this->getContext());
+            if (method_exists($query, 'chunk')) {
+                $batchSize = $indexManager->getBatchSize();
+                $query->chunk($batchSize, function (iterable $models) use ($batchIndexer) {
+                    $searchables = [];
+                    foreach ($models as $model) {
+                        if (method_exists($model, 'shouldBeSearchable') && !$model->shouldBeSearchable()) {
+                            $model->searchableRemove();
+                            continue;
+                        }
+                        $searchables[] = $model;
+                    }
+                    if ($searchables !== []) {
+                        $batchIndexer->indexMany($searchables);
+                    }
+                });
+            } else {
+                $models = $query->get();
+                $searchables = [];
+                foreach ($models as $model) {
+                    if (method_exists($model, 'shouldBeSearchable') && !$model->shouldBeSearchable()) {
+                        $model->searchableRemove();
+                        continue;
+                    }
+                    $searchables[] = $model;
+                }
+                if ($searchables !== []) {
+                    $batchIndexer->indexMany($searchables);
+                }
+            }
+        } else {
+            $models = $modelClass::all($this->getContext());
+            $searchables = [];
+            foreach ($models as $model) {
+                if (method_exists($model, 'shouldBeSearchable') && !$model->shouldBeSearchable()) {
+                    $model->searchableRemove();
+                    continue;
+                }
+                $searchables[] = $model;
+            }
+            if ($searchables !== []) {
+                $batchIndexer->indexMany($searchables);
+            }
         }
 
         $this->success('Indexing complete.');

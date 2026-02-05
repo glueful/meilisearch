@@ -46,7 +46,7 @@ class SyncSearchableJob extends Job
         if (method_exists($modelClass, 'find')) {
             $model = $modelClass::find($context, $id);
             if ($model !== null) {
-                app($context, SearchEngineInterface::class)->index($model);
+                $model->searchableSync();
             }
         }
     }

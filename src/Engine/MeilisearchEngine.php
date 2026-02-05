@@ -7,6 +7,7 @@ namespace Glueful\Extensions\Meilisearch\Engine;
 use Glueful\Extensions\Meilisearch\Client\MeilisearchClient;
 use Glueful\Extensions\Meilisearch\Contracts\SearchableInterface;
 use Glueful\Extensions\Meilisearch\Contracts\SearchEngineInterface;
+use Glueful\Extensions\Meilisearch\Indexing\BatchIndexer;
 use Glueful\Extensions\Meilisearch\Indexing\IndexManager;
 use Glueful\Extensions\Meilisearch\Query\SearchQuery;
 
@@ -17,7 +18,8 @@ class MeilisearchEngine implements SearchEngineInterface
 {
     public function __construct(
         private readonly MeilisearchClient $client,
-        private readonly IndexManager $indexManager
+        private readonly IndexManager $indexManager,
+        private readonly BatchIndexer $batchIndexer
     ) {}
 
     /**
@@ -38,22 +40,7 @@ class MeilisearchEngine implements SearchEngineInterface
      */
     public function indexMany(iterable $models): void
     {
-        $documents = [];
-        $indexName = null;
-
-        foreach ($models as $model) {
-            if ($indexName === null) {
-                $indexName = $model->searchableAs();
-            }
-            $documents[] = $model->toSearchableArray();
-        }
-
-        if ($documents === [] || $indexName === null) {
-            return;
-        }
-
-        $index = $this->indexManager->getOrCreateIndex($indexName);
-        $index->addDocuments($documents, 'id');
+        $this->batchIndexer->indexMany($models);
     }
 
     /**

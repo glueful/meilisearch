@@ -12,6 +12,9 @@ return [
     */
     'host' => env('MEILISEARCH_HOST', 'http://127.0.0.1:7700'),
     'key' => env('MEILISEARCH_KEY', null),
+    // Optional comma-separated list of allowed index names
+    // Example: "posts,parps,entities"
+    'allowed_indexes' => env('MEILISEARCH_ALLOWED_INDEXES', null),
 
     /*
     |--------------------------------------------------------------------------

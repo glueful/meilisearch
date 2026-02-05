@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-02-05
+
+### Added
+- **CLI Commands**: New console commands for index management
+  - `search:index` - Index searchable models with options:
+    - `--model` - Model class to index
+    - `--id` - Comma-separated IDs for selective indexing
+    - `--fresh` - Flush index before indexing
+    - Supports chunking for large datasets via `query()->chunk()`
+  - `search:sync` - Sync index settings from models with options:
+    - `--model` - Model class to sync settings for
+    - `--dry-run` - Preview settings without applying
+- **SyncSearchableJob**: Queue job for async search indexing
+  - Handles `index` and `remove` actions
+  - Works with ApplicationContext for proper request isolation
+- **SearchController**: HTTP endpoints for search operations
+  - `search()` - Query-param based search (`?index=&q=`)
+  - `searchIndex()` - Path-param based search (`/{index}?q=`)
+  - `status()` - List all Meilisearch indexes
+  - Index validation with allowed indexes allowlist support
+- **Index Allowlist**: Security feature to restrict searchable indexes
+  - Configure via `MEILISEARCH_ALLOWED_INDEXES` env variable
+  - Comma-separated index names (e.g., `posts,users,products`)
+
+### Changed
+- **MeilisearchEngine**: Wired `BatchIndexer` into `indexMany()` method
+  - Bulk indexing now routes through the batch indexer for better performance
+  - Handles chunked uploads to avoid memory issues with large datasets
+- **MeilisearchProvider**: Enhanced service registration
+  - Added `BatchIndexer` to DI container
+  - Auto-discovery of CLI commands via `discoverCommands()`
+
+### Documentation
+- **README**: Added documentation for `MEILISEARCH_ALLOWED_INDEXES` environment variable
+  - Explains index allowlist configuration for HTTP search routes
+  - Includes env example with comma-separated index names
+
 ## [1.1.0] - 2026-02-05
 
 ### Changed

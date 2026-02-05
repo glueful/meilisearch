@@ -43,6 +43,12 @@ class SyncCommand extends BaseCommand
         $model = new $modelClass([], $this->getContext());
         if ($dry) {
             $this->info('Dry run only; no changes applied.');
+            $settings = $manager->buildSettingsForModel($model);
+            if ($settings === []) {
+                $this->info('No settings to apply for this model.');
+                return self::SUCCESS;
+            }
+            $this->line(json_encode($settings, JSON_PRETTY_PRINT));
             return self::SUCCESS;
         }
 

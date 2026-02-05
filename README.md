@@ -117,6 +117,10 @@ MEILISEARCH_KEY=your-master-key
 # Index prefix (optional, useful for multi-tenant or staging/production separation)
 MEILISEARCH_PREFIX=myapp_
 
+# Optional allowlist of indexes that can be queried via the HTTP search routes
+# Comma-separated index names without prefix
+MEILISEARCH_ALLOWED_INDEXES=posts,parps,entities
+
 # Queue configuration (optional, for async indexing)
 MEILISEARCH_QUEUE=false
 MEILISEARCH_QUEUE_CONNECTION=redis
