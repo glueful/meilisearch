@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 use Glueful\Extensions\Meilisearch\Controllers\SearchController;
 use Glueful\Routing\Router;
-use Symfony\Component\HttpFoundation\Request;
 
 /** @var Router $router Router instance injected by RouteManifest::load() */
 
@@ -54,10 +53,28 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @response 401 application/json "Authentication required"
      * @response 404 application/json "Index not found"
      */
-    $router->get('/', function (Request $request) use ($router) {
-        $controller = container($router->getContext())->get(SearchController::class);
-        return $controller->search($request);
-    });
+    $router->get('/', [SearchController::class, 'search']);
+
+    /**
+     * @route GET /api/search/admin/status
+     * @tag Search Admin
+     * @summary Get index status
+     * @description Retrieves status information for all Meilisearch indexes including
+     *              primary keys, creation dates, and update timestamps. Requires admin privileges.
+     * @requiresAuth true
+     * @response 200 application/json "Index status retrieved successfully" {
+     *   indexes:array=[{
+     *     uid:string="Index unique identifier (with prefix)",
+     *     primaryKey:string="Primary key field name",
+     *     createdAt:string="Index creation timestamp (ISO 8601)",
+     *     updatedAt:string="Last update timestamp (ISO 8601)"
+     *   }]
+     * }
+     * @response 401 application/json "Authentication required"
+     * @response 403 application/json "Admin privileges required"
+     */
+    $router->get('/admin/status', [SearchController::class, 'status'])
+        ->middleware(['admin']);
 
     /**
      * @route GET /api/search/{index}
@@ -88,32 +105,5 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @response 401 application/json "Authentication required"
      * @response 404 application/json "Index not found"
      */
-    $router->get('/{index}', function (Request $request, string $index) use ($router) {
-        $controller = container($router->getContext())->get(SearchController::class);
-        return $controller->searchIndex($request, $index);
-    });
-
-    /**
-     * @route GET /api/search/admin/status
-     * @tag Search Admin
-     * @summary Get index status
-     * @description Retrieves status information for all Meilisearch indexes including
-     *              primary keys, creation dates, and update timestamps. Requires admin privileges.
-     * @requiresAuth true
-     * @response 200 application/json "Index status retrieved successfully" {
-     *   indexes:array=[{
-     *     uid:string="Index unique identifier (with prefix)",
-     *     primaryKey:string="Primary key field name",
-     *     createdAt:string="Index creation timestamp (ISO 8601)",
-     *     updatedAt:string="Last update timestamp (ISO 8601)"
-     *   }]
-     * }
-     * @response 401 application/json "Authentication required"
-     * @response 403 application/json "Admin privileges required"
-     */
-    $router->get('/admin/status', function (Request $request) use ($router) {
-        $controller = container($router->getContext())->get(SearchController::class);
-        return $controller->status($request);
-    })->middleware(['admin']);
-
+    $router->get('/{index}', [SearchController::class, 'searchIndex']);
 });

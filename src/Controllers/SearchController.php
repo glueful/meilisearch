@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Glueful\Extensions\Meilisearch\Controllers;
 
-use Glueful\Bootstrap\ApplicationContext;
 use Glueful\Extensions\Meilisearch\Client\MeilisearchClient;
 use Glueful\Http\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController
 {
     public function __construct(
-        private readonly ApplicationContext $context,
         private readonly MeilisearchClient $client,
     ) {
     }
@@ -29,23 +27,27 @@ class SearchController
         unset($params['index'], $params['q']);
 
         $prefixedIndex = $this->client->prefixedIndexName($index);
+        /** @var \Meilisearch\Search\SearchResult $result */
         $result = $this->client->index($prefixedIndex)->search($query, $params);
-        return Response::json($result->toArray());
+        return Response::success($result->toArray());
     }
 
-    public function searchIndex(Request $request, string $index): Response
+    public function searchIndex(Request $request): Response
     {
+        $index = $request->attributes->get('index', '');
         $query = (string) $request->query->get('q', '');
         $params = $request->query->all();
         unset($params['q']);
 
         $prefixedIndex = $this->client->prefixedIndexName($index);
+        /** @var \Meilisearch\Search\SearchResult $result */
         $result = $this->client->index($prefixedIndex)->search($query, $params);
-        return Response::json($result->toArray());
+        return Response::success($result->toArray());
     }
 
-    public function status(Request $request): Response
+    public function status(): Response
     {
+        /** @var \Meilisearch\Contracts\IndexesResults $result */
         $result = $this->client->getIndexes();
         $indexes = [];
         foreach ($result->getResults() as $idx) {
@@ -56,6 +58,6 @@ class SearchController
                 'updatedAt' => $idx->getUpdatedAt()?->format('c'),
             ];
         }
-        return Response::json(['indexes' => $indexes]);
+        return Response::success(['indexes' => $indexes]);
     }
 }

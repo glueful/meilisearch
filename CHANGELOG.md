@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-02-05
+
+### Changed
+- **Framework Compatibility**: Updated minimum framework requirement to Glueful 1.28.0
+  - Compatible with route caching infrastructure (Bellatrix release)
+  - Routes already use `[Controller::class, 'method']` syntax - no code changes required
+  - Controllers already accept `Request` directly with proper parameter extraction
+- **SearchController**: Updated to use `Response::success()` for consistency with framework patterns
+- **MeilisearchClient**: Added `@method` PHPDoc annotations for IDE support
+  - Provides type hints for `index()` and `getIndexes()` methods
+- **composer.json**: Updated `extra.glueful.requires.glueful` to `>=1.28.0`
+
+### Notes
+- This release ensures compatibility with Glueful Framework 1.28.0's route caching improvements
+- Routes can now be compiled and cached for improved performance
+- Run `composer update` after upgrading
+
 ## [1.0.0] - 2026-02-04
 
 ### Added

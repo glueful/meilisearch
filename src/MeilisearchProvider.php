@@ -79,7 +79,7 @@ class MeilisearchProvider extends ServiceProvider
             $this->app->get(\Glueful\Extensions\ExtensionManager::class)->registerMeta(self::class, [
                 'slug' => 'meilisearch',
                 'name' => 'Meilisearch',
-                'version' => '1.0.0',
+                'version' => '1.1.0',
                 'description' => 'Full-text search powered by Meilisearch',
             ]);
         } catch (\Throwable $e) {
