@@ -11,6 +11,9 @@ use Meilisearch\Client;
  *
  * Provides additional functionality like index prefixing and
  * configuration-aware client instantiation.
+ *
+ * @method \Meilisearch\Endpoints\Indexes index(string $uid, ?string $primaryKey = null)
+ * @method \Meilisearch\Contracts\IndexesResults getIndexes(?array $options = null)
  */
 class MeilisearchClient extends Client
 {
