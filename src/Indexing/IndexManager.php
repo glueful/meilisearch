@@ -161,15 +161,12 @@ class IndexManager
     }
 
     /**
-     * Sync index settings from a searchable model.
-     *
-     * Applies filterable/sortable attributes and custom settings from the model.
+     * Build index settings from a searchable model without applying them.
      *
      * @param object $model A model using the Searchable trait
      */
-    public function syncSettingsForModel(object $model): array
+    public function buildSettingsForModel(object $model): array
     {
-        $indexName = $model->searchableAs();
         $settings = function_exists('config')
             ? (array) config($this->context, 'meilisearch.index_settings', [])
             : [];
@@ -197,6 +194,21 @@ class IndexManager
                 $settings = array_replace_recursive($settings, $customSettings);
             }
         }
+
+        return $settings;
+    }
+
+    /**
+     * Sync index settings from a searchable model.
+     *
+     * Applies filterable/sortable attributes and custom settings from the model.
+     *
+     * @param object $model A model using the Searchable trait
+     */
+    public function syncSettingsForModel(object $model): array
+    {
+        $indexName = $model->searchableAs();
+        $settings = $this->buildSettingsForModel($model);
 
         if ($settings === []) {
             return ['status' => 'no_settings'];

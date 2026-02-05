@@ -12,6 +12,7 @@ use Glueful\Extensions\Meilisearch\Client\ClientFactory;
 use Glueful\Extensions\Meilisearch\Contracts\SearchEngineInterface;
 use Glueful\Extensions\Meilisearch\Engine\MeilisearchEngine;
 use Glueful\Extensions\Meilisearch\Indexing\IndexManager;
+use Glueful\Extensions\Meilisearch\Indexing\BatchIndexer;
 
 /**
  * Meilisearch extension service provider.
@@ -34,6 +35,12 @@ class MeilisearchProvider extends ServiceProvider
             // Index manager
             IndexManager::class => [
                 'class' => IndexManager::class,
+                'shared' => true,
+                'autowire' => true,
+            ],
+            // Batch indexer
+            BatchIndexer::class => [
+                'class' => BatchIndexer::class,
                 'shared' => true,
                 'autowire' => true,
             ],
@@ -79,7 +86,7 @@ class MeilisearchProvider extends ServiceProvider
             $this->app->get(\Glueful\Extensions\ExtensionManager::class)->registerMeta(self::class, [
                 'slug' => 'meilisearch',
                 'name' => 'Meilisearch',
-                'version' => '1.1.0',
+                'version' => '1.2.0',
                 'description' => 'Full-text search powered by Meilisearch',
             ]);
         } catch (\Throwable $e) {
