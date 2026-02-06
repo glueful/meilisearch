@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-02-06
+
+### Changed
+- **Version Management**: Version is now read from `composer.json` at runtime via `MeilisearchProvider::composerVersion()`.
+  - `registerMeta()` in `boot()` now uses `self::composerVersion()` instead of a hardcoded string.
+  - Future releases only require updating `composer.json` and `CHANGELOG.md`.
+
+### Notes
+- No breaking changes. Internal refactor only.
+
 ## [1.2.0] - 2026-02-05
 
 ### Added

@@ -19,6 +19,22 @@ use Glueful\Extensions\Meilisearch\Indexing\BatchIndexer;
  */
 class MeilisearchProvider extends ServiceProvider
 {
+    private static ?string $cachedVersion = null;
+
+    /**
+     * Read the extension version from composer.json (cached)
+     */
+    public static function composerVersion(): string
+    {
+        if (self::$cachedVersion === null) {
+            $path = __DIR__ . '/../composer.json';
+            $composer = json_decode(file_get_contents($path), true);
+            self::$cachedVersion = $composer['version'] ?? '0.0.0';
+        }
+
+        return self::$cachedVersion;
+    }
+
     /**
      * Services to register in DI container.
      */
@@ -86,7 +102,7 @@ class MeilisearchProvider extends ServiceProvider
             $this->app->get(\Glueful\Extensions\ExtensionManager::class)->registerMeta(self::class, [
                 'slug' => 'meilisearch',
                 'name' => 'Meilisearch',
-                'version' => '1.2.0',
+                'version' => self::composerVersion(),
                 'description' => 'Full-text search powered by Meilisearch',
             ]);
         } catch (\Throwable $e) {
