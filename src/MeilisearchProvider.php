@@ -10,6 +10,7 @@ use Glueful\Extensions\ServiceProvider;
 use Glueful\Extensions\Meilisearch\Client\MeilisearchClient;
 use Glueful\Extensions\Meilisearch\Client\ClientFactory;
 use Glueful\Extensions\Meilisearch\Contracts\SearchEngineInterface;
+use Glueful\Extensions\Meilisearch\Controllers\SearchController;
 use Glueful\Extensions\Meilisearch\Engine\MeilisearchEngine;
 use Glueful\Extensions\Meilisearch\Indexing\IndexManager;
 use Glueful\Extensions\Meilisearch\Indexing\BatchIndexer;
@@ -72,6 +73,11 @@ class MeilisearchProvider extends ServiceProvider
                 'shared' => true,
                 'autowire' => true,
             ],
+            SearchController::class => [
+                'class' => SearchController::class,
+                'shared' => true,
+                'autowire' => true,
+            ],
         ];
     }
 
@@ -107,6 +113,17 @@ class MeilisearchProvider extends ServiceProvider
             ]);
         } catch (\Throwable $e) {
             error_log('[Meilisearch] Failed to register metadata: ' . $e->getMessage());
+        }
+
+        // Load HTTP routes for search endpoints
+        try {
+            $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        } catch (\Throwable $e) {
+            error_log('[Meilisearch] Failed to load routes: ' . $e->getMessage());
+            $env = (string)($_ENV['APP_ENV'] ?? (getenv('APP_ENV') !== false ? getenv('APP_ENV') : 'production'));
+            if ($env !== 'production') {
+                throw $e;
+            }
         }
 
         // Auto-discover CLI commands from Console/ directory

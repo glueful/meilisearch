@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-02-09
+
+### Fixed
+- **Controller DI Registration**: `SearchController` was not registered in `MeilisearchProvider::services()`, causing `Service not found` errors when the router resolved the controller from the container. Controller is now explicitly registered with its dependencies.
+
+### Notes
+- Patch release. No breaking changes.
+
 ## [1.2.1] - 2026-02-06
 
 ### Changed
