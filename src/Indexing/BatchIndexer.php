@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Glueful\Extensions\Meilisearch\Indexing;
 
 use Glueful\Extensions\Meilisearch\Contracts\SearchableInterface;
-use Glueful\Extensions\Meilisearch\Engine\MeilisearchEngine;
 
 class BatchIndexer
 {
     public function __construct(
-        private readonly MeilisearchEngine $engine,
         private readonly IndexManager $indexManager,
     ) {
     }
