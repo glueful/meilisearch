@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-02-13
+
+### Fixed
+- **Circular Dependency**: Removed unused `MeilisearchEngine` parameter from `BatchIndexer` constructor. `BatchIndexer` only needs `IndexManager` — it delegates all Meilisearch operations through that. This eliminates the circular dependency: `MeilisearchEngine → BatchIndexer → MeilisearchEngine`.
+
+### Notes
+- Patch release. No breaking changes.
+
 ## [1.2.2] - 2026-02-09
 
 ### Fixed
