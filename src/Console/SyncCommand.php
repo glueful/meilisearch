@@ -17,6 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class SyncCommand extends BaseCommand
 {
+    use ResolvesModelClass;
     protected function configure(): void
     {
         $this->setDescription('Sync index settings from models')
@@ -34,6 +35,8 @@ class SyncCommand extends BaseCommand
             $this->error('Provide --model to sync settings');
             return self::FAILURE;
         }
+
+        $modelClass = $this->resolveModelClass($modelClass);
 
         if (!class_exists($modelClass)) {
             $this->error('Model class not found: ' . $modelClass);

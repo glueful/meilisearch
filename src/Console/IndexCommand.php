@@ -18,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class IndexCommand extends BaseCommand
 {
+    use ResolvesModelClass;
     protected function configure(): void
     {
         $this->setDescription('Index searchable models')
@@ -36,6 +37,8 @@ class IndexCommand extends BaseCommand
             $this->error('You must provide --model');
             return self::FAILURE;
         }
+
+        $modelClass = $this->resolveModelClass($modelClass);
 
         if (!class_exists($modelClass)) {
             $this->error('Model class not found: ' . $modelClass);

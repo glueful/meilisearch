@@ -7,6 +7,7 @@ namespace Glueful\Extensions\Meilisearch\Console;
 use Glueful\Console\BaseCommand;
 use Glueful\Extensions\Meilisearch\Client\MeilisearchClient;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,8 +21,8 @@ class SearchCommand extends BaseCommand
     protected function configure(): void
     {
         $this->setDescription('Run a search query against an index')
-            ->addArgument('index', InputOption::VALUE_REQUIRED, 'Index name')
-            ->addArgument('query', InputOption::VALUE_OPTIONAL, 'Search query', '')
+            ->addArgument('index', InputArgument::REQUIRED, 'Index name')
+            ->addArgument('query', InputArgument::OPTIONAL, 'Search query', '')
             ->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter expression')
             ->addOption('limit', null, InputOption::VALUE_REQUIRED, 'Limit', '20')
             ->addOption('raw', null, InputOption::VALUE_NONE, 'Raw JSON output');
