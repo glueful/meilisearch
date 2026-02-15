@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-02-15
+
+### Added
+- **`ResolvesModelClass` trait** (`src/Console/ResolvesModelClass.php`): Resolves short model names (e.g., `Entity`) to fully qualified class names by trying `App\Models\` and `App\` prefixes before falling back to the original string. Allows `php glueful search:index --model=Entity` instead of requiring `--model=App\\Models\\Entity`.
+
+### Fixed
+- **`SearchCommand` argument registration crash**: `search:search` used `InputOption::VALUE_REQUIRED` (integer 4) and `InputOption::VALUE_OPTIONAL` for its `index` and `query` arguments instead of `InputArgument::REQUIRED` (1) and `InputArgument::OPTIONAL`. Since `InputOption::VALUE_REQUIRED` equals `InputArgument::IS_ARRAY` (4), Symfony expected an array default value and threw on command registration. Now uses the correct `InputArgument` constants.
+
+### Changed
+- **`SyncCommand` uses `ResolvesModelClass`**: Calls `$this->resolveModelClass()` before the `class_exists` check, enabling short model name resolution.
+- **`IndexCommand` uses `ResolvesModelClass`**: Same short model name resolution as `SyncCommand`.
+
+### Notes
+- No breaking changes. CLI commands accept both short names and FQCNs.
+
 ## [1.2.3] - 2026-02-13
 
 ### Fixed
