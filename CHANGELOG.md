@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-02-20
+
+### Fixed
+
+- **Typo tolerance setting key**: Changed `typo_tolerance` to `typoTolerance` to match Meilisearch API's camelCase naming convention. The snake_case key was silently ignored by Meilisearch, leaving typo tolerance at its default.
+
+### Notes
+
+- Patch release. No breaking changes.
+
+---
+
 ## [1.3.0] - 2026-02-15
 
 ### Added

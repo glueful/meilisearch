@@ -95,7 +95,7 @@ return [
         'pagination' => [
             'maxTotalHits' => 10000,
         ],
-        'typo_tolerance' => [
+        'typoTolerance' => [
             'enabled' => true,
             'minWordSizeForTypos' => [
                 'oneTypo' => 5,
