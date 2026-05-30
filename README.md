@@ -28,32 +28,41 @@ The Meilisearch extension provides seamless integration between Glueful Framewor
 
 ```bash
 composer require glueful/meilisearch
-
-# Rebuild the extensions cache after adding new packages
-php glueful extensions:cache
 ```
 
-Glueful auto-discovers packages of type `glueful-extension` and boots their service providers.
-
-Enable/disable in development (these commands edit `config/extensions.php`):
+Composer discovers packages of type `glueful-extension`, but **installing does not auto-enable** them — the provider must be in `config/extensions.php`'s `enabled` allow-list. Enable/disable in development (these commands edit `config/extensions.php` and recompile the cache):
 
 ```bash
-# Enable the extension (adds to config/extensions.php)
-php glueful extensions:enable Meilisearch
+# Enable the extension (adds the provider FQCN to `enabled`)
+php glueful extensions:enable meilisearch
 
-# Disable the extension (comments out in config/extensions.php)
-php glueful extensions:disable Meilisearch
+# Disable the extension (removes it from `enabled`)
+php glueful extensions:disable meilisearch
 
 # Preview changes without writing
-php glueful extensions:enable Meilisearch --dry-run
+php glueful extensions:enable meilisearch --dry-run
 
-# Create backup before editing
-php glueful extensions:enable Meilisearch --backup
+# Create a .bak backup before editing
+php glueful extensions:enable meilisearch --backup
 ```
+
+In production, manage the `enabled` list in config and run `php glueful extensions:cache` in your deploy step.
 
 ### Local Development Installation
 
-If you're working locally (without Composer), place the extension in `extensions/meilisearch`, ensure `config/extensions.php` has `local_path` pointing to `extensions` (non-prod).
+To develop the extension locally, register it as a Composer **path repository** in your app's `composer.json`, then require and enable it:
+
+```jsonc
+// composer.json
+"repositories": [
+    { "type": "path", "url": "extensions/meilisearch", "options": { "symlink": true } }
+]
+```
+
+```bash
+composer require glueful/meilisearch:@dev
+php glueful extensions:enable meilisearch
+```
 
 ### Verify Installation
 
@@ -61,7 +70,7 @@ Check status and details:
 
 ```bash
 php glueful extensions:list
-php glueful extensions:info Meilisearch
+php glueful extensions:info meilisearch
 ```
 
 ## Requirements
