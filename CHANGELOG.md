@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-06-05 — @queryParam Route Docs
+
+### Changed
+- **Route docblocks migrated to the editor-clean `@queryParam name:type="…"` tag** — parsed into the OpenAPI spec by the framework's `CommentsDocGenerator` as of 1.50.2 (the prior positional `@param … query …` form tripped IDE/Intelephense P1133 "undefined type" false positives). Redundant path-parameter docblocks were removed (path params auto-derive from the route URL). **Minimum framework raised to `glueful/framework >=1.50.2`** (`require-dev` `^1.50.2`). No runtime change.
+
 ## [1.4.0] - 2026-06-05 — Framework 1.50 Compatibility
 
 ### Changed

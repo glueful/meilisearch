@@ -30,15 +30,15 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @description Performs a search query across a specified index. Supports all Meilisearch
      *              search parameters including filters, facets, sorting, and pagination.
      * @requiresAuth true
-     * @param index query string true "Index name to search (without prefix)"
-     * @param q query string false "Search query string (empty string returns all documents)"
-     * @param filter query string false "Filter expression using Meilisearch syntax"
-     * @param facets query array false "Attributes to get facet distribution for"
-     * @param sort query array false "Attributes to sort by (format: attribute:direction)"
-     * @param limit query integer false "Maximum number of results to return (default: 20)"
-     * @param offset query integer false "Number of results to skip for pagination"
-     * @param attributesToRetrieve query array false "Attributes to include in results"
-     * @param attributesToHighlight query array false "Attributes to highlight matches in"
+     * @queryParam index:string="Index name to search (without prefix)" {required}
+     * @queryParam q:string="Search query string (empty string returns all documents)"
+     * @queryParam filter:string="Filter expression using Meilisearch syntax"
+     * @queryParam facets:array="Attributes to get facet distribution for"
+     * @queryParam sort:array="Attributes to sort by (format: attribute:direction)"
+     * @queryParam limit:integer="Maximum number of results to return (default: 20)"
+     * @queryParam offset:integer="Number of results to skip for pagination"
+     * @queryParam attributesToRetrieve:array="Attributes to include in results"
+     * @queryParam attributesToHighlight:array="Attributes to highlight matches in"
      * @response 200 application/json "Search results retrieved successfully" {
      *   hits:array=[{
      *     id:string="Document primary key",
@@ -83,15 +83,14 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @description Performs a search query on a specific index. The index name is provided
      *              as a path parameter. Supports all Meilisearch search parameters.
      * @requiresAuth true
-     * @param index path string true "Index name to search (without prefix)"
-     * @param q query string false "Search query string (empty string returns all documents)"
-     * @param filter query string false "Filter expression using Meilisearch syntax"
-     * @param facets query array false "Attributes to get facet distribution for"
-     * @param sort query array false "Attributes to sort by (format: attribute:direction)"
-     * @param limit query integer false "Maximum number of results to return (default: 20)"
-     * @param offset query integer false "Number of results to skip for pagination"
-     * @param attributesToRetrieve query array false "Attributes to include in results"
-     * @param attributesToHighlight query array false "Attributes to highlight matches in"
+     * @queryParam q:string="Search query string (empty string returns all documents)"
+     * @queryParam filter:string="Filter expression using Meilisearch syntax"
+     * @queryParam facets:array="Attributes to get facet distribution for"
+     * @queryParam sort:array="Attributes to sort by (format: attribute:direction)"
+     * @queryParam limit:integer="Maximum number of results to return (default: 20)"
+     * @queryParam offset:integer="Number of results to skip for pagination"
+     * @queryParam attributesToRetrieve:array="Attributes to include in results"
+     * @queryParam attributesToHighlight:array="Attributes to highlight matches in"
      * @response 200 application/json "Search results retrieved successfully" {
      *   hits:array=[{
      *     id:string="Document primary key",
