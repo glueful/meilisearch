@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-06-05 — Framework 1.50 Compatibility
+
+### Changed
+- **Minimum framework requirement raised to `glueful/framework >=1.50.1`** (`require-dev` pinned to `^1.50.1`); previously `>=1.28.0`.
+
+### Build
+- **Added `phpunit.xml`.** The extension shipped `tests/Unit` + `tests/Integration` directories but no PHPUnit config, so `composer test` printed PHPUnit's help instead of running. Now configured (Unit + Integration suites, `vendor/autoload.php` bootstrap). No tests are committed yet — the harness is in place for future ones.
+
+### Notes
+- Compatibility/maintenance release — **no code changes**. Verified clean against framework 1.50.1: no removed-API usage (no `Glueful\Repository\UserRepository`, no `Glueful\Events\EventListener`), `SearchController` is standalone (not `BaseController`), model→search sync fires via the ORM `static::created` lifecycle hook, and there are no migrations/FKs. (Seven pre-existing PHPStan style findings remain — dynamic-model method calls + strict comparisons — unrelated.)
+
 ## [1.3.1] - 2026-02-20
 
 ### Fixed
