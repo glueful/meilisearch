@@ -33,7 +33,8 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @requiresAuth true
      * @queryParam index:string="Index name to search (without prefix)" {required}
      * @queryParam q:string="Search query string (empty string returns all documents)"
-     * @queryParam filter:string="Filter expression using Meilisearch syntax; combined with the server-side scope filter"
+     * @queryParam filter:string="Filter expression using Meilisearch syntax;
+     *                           combined with the server-side scope filter"
      * @queryParam facets:array="Attributes to get facet distribution for"
      * @queryParam sort:array="Attributes to sort by (format: attribute:direction)"
      * @queryParam limit:integer="Maximum number of results to return (default: 20)"
@@ -90,7 +91,8 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      *              scope filter, and only accepts configured safe search parameters.
      * @requiresAuth true
      * @queryParam q:string="Search query string (empty string returns all documents)"
-     * @queryParam filter:string="Filter expression using Meilisearch syntax; combined with the server-side scope filter"
+     * @queryParam filter:string="Filter expression using Meilisearch syntax;
+     *                           combined with the server-side scope filter"
      * @queryParam facets:array="Attributes to get facet distribution for"
      * @queryParam sort:array="Attributes to sort by (format: attribute:direction)"
      * @queryParam limit:integer="Maximum number of results to return (default: 20)"

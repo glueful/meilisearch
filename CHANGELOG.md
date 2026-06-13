@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **Search indexing now defaults to the primary identifier only.** Models must override `toSearchableArray()` to expose searchable fields intentionally; index settings can derive displayed attributes from `getSearchableDisplayedAttributes()`.
 
+### Build
+- **PHPCS now uses PSR-12, matching the current extension standard.** The previous Squiz script produced thousands of non-project-standard style failures.
+
 ## [1.4.1] - 2026-06-05 — @queryParam Route Docs
 
 ### Changed

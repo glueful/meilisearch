@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class IndexCommand extends BaseCommand
 {
     use ResolvesModelClass;
+
     protected function configure(): void
     {
         $this->setDescription('Index searchable models')
