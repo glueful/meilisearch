@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- **HTTP search routes now require `meilisearch.search` permission and route rate limiting.** Authenticated users can no longer query all configured search indexes with only the base `auth` middleware.
+- **HTTP search is deny-by-default.** `MEILISEARCH_ALLOWED_INDEXES` now defaults to an empty list, and private indexes require a configured server-side filter unless explicitly listed in `http_search.public_indexes`.
+- **Caller-controlled search parameters are now bounded.** Unsupported search params are rejected, caller filters are combined with the configured server-side scope filter, and `attributesToRetrieve` is limited to configured retrievable attributes.
+
 ## [1.4.1] - 2026-06-05 — @queryParam Route Docs
 
 ### Changed

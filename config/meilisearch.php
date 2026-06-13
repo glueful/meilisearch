@@ -12,9 +12,46 @@ return [
     */
     'host' => env('MEILISEARCH_HOST', 'http://127.0.0.1:7700'),
     'key' => env('MEILISEARCH_KEY', null),
-    // Optional comma-separated list of allowed index names
-    // Example: "posts,parps,entities"
-    'allowed_indexes' => env('MEILISEARCH_ALLOWED_INDEXES', null),
+    // Optional comma-separated list of allowed index names for HTTP search routes.
+    // Defaults to an empty list so request-facing search is deny-by-default.
+    'allowed_indexes' => env('MEILISEARCH_ALLOWED_INDEXES', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTP Search Exposure
+    |--------------------------------------------------------------------------
+    |
+    | Request-facing search routes require the meilisearch.search permission.
+    | Indexes must also be allowlisted here. Private indexes need a server-side
+    | filter unless they are explicitly listed as public indexes.
+    |
+    */
+    'http_search' => [
+        'allowed_indexes' => env('MEILISEARCH_ALLOWED_INDEXES', ''),
+        'public_indexes' => env('MEILISEARCH_PUBLIC_INDEXES', ''),
+        'require_server_filter' => (bool) env('MEILISEARCH_REQUIRE_SERVER_FILTER', true),
+        'server_filters' => [
+            // Example:
+            // 'posts' => 'tenant_uuid = "{claims.tenant_uuid}"',
+        ],
+        'retrievable_attributes' => [
+            // Example:
+            // 'posts' => ['id', 'title', 'excerpt'],
+        ],
+        'allowed_parameters' => [
+            'filter',
+            'facets',
+            'sort',
+            'limit',
+            'offset',
+            'page',
+            'hitsPerPage',
+            'attributesToRetrieve',
+            'attributesToHighlight',
+            'showMatchesPosition',
+            'matchingStrategy',
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------

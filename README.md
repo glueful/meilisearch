@@ -126,9 +126,11 @@ MEILISEARCH_KEY=your-master-key
 # Index prefix (optional, useful for multi-tenant or staging/production separation)
 MEILISEARCH_PREFIX=myapp_
 
-# Optional allowlist of indexes that can be queried via the HTTP search routes
-# Comma-separated index names without prefix
+# HTTP search routes are deny-by-default. Add index names without prefix.
 MEILISEARCH_ALLOWED_INDEXES=posts,parps,entities
+
+# Indexes that do not need a server-side scope filter, such as public documents
+MEILISEARCH_PUBLIC_INDEXES=posts
 
 # Queue configuration (optional, for async indexing)
 MEILISEARCH_QUEUE=false
@@ -155,6 +157,19 @@ return [
     'host' => env('MEILISEARCH_HOST', 'http://127.0.0.1:7700'),
     'key' => env('MEILISEARCH_KEY', null),
     'prefix' => env('MEILISEARCH_PREFIX', ''),
+    'allowed_indexes' => env('MEILISEARCH_ALLOWED_INDEXES', ''),
+
+    'http_search' => [
+        'allowed_indexes' => env('MEILISEARCH_ALLOWED_INDEXES', ''),
+        'public_indexes' => env('MEILISEARCH_PUBLIC_INDEXES', ''),
+        'require_server_filter' => true,
+        'server_filters' => [
+            // 'posts' => 'tenant_uuid = "{claims.tenant_uuid}"',
+        ],
+        'retrievable_attributes' => [
+            // 'posts' => ['id', 'title', 'excerpt'],
+        ],
+    ],
 
     'queue' => [
         'enabled' => (bool) env('MEILISEARCH_QUEUE', false),
@@ -241,6 +256,31 @@ class Post extends Model implements SearchableInterface
     }
 }
 ```
+
+### HTTP Search Routes
+
+The request-facing search routes require:
+
+- `auth`
+- `meilisearch.search` permission
+- route rate limiting
+- an index listed in `MEILISEARCH_ALLOWED_INDEXES`
+
+Private indexes also require a configured server-side filter. For example:
+
+```php
+'http_search' => [
+    'allowed_indexes' => ['posts'],
+    'server_filters' => [
+        'posts' => 'tenant_uuid = "{claims.tenant_uuid}"',
+    ],
+    'retrievable_attributes' => [
+        'posts' => ['id', 'title', 'excerpt'],
+    ],
+],
+```
+
+Caller-provided `filter` values are combined with the server-side filter using `AND`. `attributesToRetrieve` is rejected unless every requested field is in the configured retrievable list for that index. If the caller omits `attributesToRetrieve`, the configured retrievable list is used; if none is configured, only `id` is returned.
 
 ### Basic Searching
 

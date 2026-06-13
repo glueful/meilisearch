@@ -27,17 +27,18 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @route GET /api/search
      * @tag Search
      * @summary Universal search
-     * @description Performs a search query across a specified index. Supports all Meilisearch
-     *              search parameters including filters, facets, sorting, and pagination.
+     * @description Performs a search query across an explicitly allowlisted index. The route
+     *              requires the `meilisearch.search` permission, applies the configured
+     *              server-side scope filter, and only accepts configured safe search parameters.
      * @requiresAuth true
      * @queryParam index:string="Index name to search (without prefix)" {required}
      * @queryParam q:string="Search query string (empty string returns all documents)"
-     * @queryParam filter:string="Filter expression using Meilisearch syntax"
+     * @queryParam filter:string="Filter expression using Meilisearch syntax; combined with the server-side scope filter"
      * @queryParam facets:array="Attributes to get facet distribution for"
      * @queryParam sort:array="Attributes to sort by (format: attribute:direction)"
      * @queryParam limit:integer="Maximum number of results to return (default: 20)"
      * @queryParam offset:integer="Number of results to skip for pagination"
-     * @queryParam attributesToRetrieve:array="Attributes to include in results"
+     * @queryParam attributesToRetrieve:array="Configured retrievable attributes to include in results"
      * @queryParam attributesToHighlight:array="Attributes to highlight matches in"
      * @response 200 application/json "Search results retrieved successfully" {
      *   hits:array=[{
@@ -51,9 +52,13 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * }
      * @response 400 application/json "Missing index parameter"
      * @response 401 application/json "Authentication required"
+     * @response 403 application/json "Search permission or scope required"
      * @response 404 application/json "Index not found"
      */
-    $router->get('/', [SearchController::class, 'search']);
+    $router->get('/', [SearchController::class, 'search'])
+        ->middleware('meilisearch_permission:meilisearch.search')
+        ->middleware('rate_limit')
+        ->rateLimit(60, 1, by: 'user');
 
     /**
      * @route GET /api/search/admin/status
@@ -80,16 +85,17 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      * @route GET /api/search/{index}
      * @tag Search
      * @summary Search specific index
-     * @description Performs a search query on a specific index. The index name is provided
-     *              as a path parameter. Supports all Meilisearch search parameters.
+     * @description Performs a search query on a specific allowlisted index. The route requires
+     *              the `meilisearch.search` permission, applies the configured server-side
+     *              scope filter, and only accepts configured safe search parameters.
      * @requiresAuth true
      * @queryParam q:string="Search query string (empty string returns all documents)"
-     * @queryParam filter:string="Filter expression using Meilisearch syntax"
+     * @queryParam filter:string="Filter expression using Meilisearch syntax; combined with the server-side scope filter"
      * @queryParam facets:array="Attributes to get facet distribution for"
      * @queryParam sort:array="Attributes to sort by (format: attribute:direction)"
      * @queryParam limit:integer="Maximum number of results to return (default: 20)"
      * @queryParam offset:integer="Number of results to skip for pagination"
-     * @queryParam attributesToRetrieve:array="Attributes to include in results"
+     * @queryParam attributesToRetrieve:array="Configured retrievable attributes to include in results"
      * @queryParam attributesToHighlight:array="Attributes to highlight matches in"
      * @response 200 application/json "Search results retrieved successfully" {
      *   hits:array=[{
@@ -102,7 +108,11 @@ $router->group(['prefix' => '/api/search', 'middleware' => ['auth']], function (
      *   facetDistribution:object="Facet counts by attribute (if requested)"
      * }
      * @response 401 application/json "Authentication required"
+     * @response 403 application/json "Search permission or scope required"
      * @response 404 application/json "Index not found"
      */
-    $router->get('/{index}', [SearchController::class, 'searchIndex']);
+    $router->get('/{index}', [SearchController::class, 'searchIndex'])
+        ->middleware('meilisearch_permission:meilisearch.search')
+        ->middleware('rate_limit')
+        ->rateLimit(60, 1, by: 'user');
 });

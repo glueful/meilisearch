@@ -12,8 +12,10 @@ use Glueful\Extensions\Meilisearch\Client\ClientFactory;
 use Glueful\Extensions\Meilisearch\Contracts\SearchEngineInterface;
 use Glueful\Extensions\Meilisearch\Controllers\SearchController;
 use Glueful\Extensions\Meilisearch\Engine\MeilisearchEngine;
+use Glueful\Extensions\Meilisearch\Http\RequireMeilisearchPermission;
 use Glueful\Extensions\Meilisearch\Indexing\IndexManager;
 use Glueful\Extensions\Meilisearch\Indexing\BatchIndexer;
+use Glueful\Permissions\Catalog\Permission;
 
 /**
  * Meilisearch extension service provider.
@@ -78,6 +80,23 @@ class MeilisearchProvider extends ServiceProvider
                 'shared' => true,
                 'autowire' => true,
             ],
+            RequireMeilisearchPermission::class => [
+                'class' => RequireMeilisearchPermission::class,
+                'shared' => true,
+                'autowire' => true,
+                'alias' => ['meilisearch_permission'],
+            ],
+        ];
+    }
+
+    public function permissions(): array
+    {
+        return [
+            Permission::define('meilisearch.search')
+                ->label('Search Meilisearch indexes')
+                ->category('Meilisearch')
+                ->resource('meilisearch')
+                ->managedBy('glueful/meilisearch'),
         ];
     }
 
