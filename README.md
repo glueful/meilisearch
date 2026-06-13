@@ -199,6 +199,8 @@ return [
 
 Add the `Searchable` trait to any model. Implementing `SearchableInterface` is recommended for static analysis type checking:
 
+By default, the trait indexes only the primary identifier. Override `toSearchableArray()` to expose fields intentionally; do not return a full model row unless every field is safe for search indexing and retrieval.
+
 ```php
 <?php
 
@@ -245,6 +247,14 @@ class Post extends Model implements SearchableInterface
     public function getSearchableSortableAttributes(): array
     {
         return ['published_at', 'title'];
+    }
+
+    /**
+     * Define attributes Meilisearch may return to search callers.
+     */
+    public function getSearchableDisplayedAttributes(): array
+    {
+        return ['id', 'title', 'body', 'author_name', 'tags', 'category', 'status', 'published_at'];
     }
 
     /**

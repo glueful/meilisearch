@@ -142,14 +142,7 @@ trait Searchable
      */
     public function toSearchableArray(): array
     {
-        $data = $this->toArray();
-
-        // Ensure 'id' field exists for Meilisearch primary key
-        if (!isset($data['id'])) {
-            $data['id'] = $this->getSearchableId();
-        }
-
-        return $data;
+        return ['id' => $this->getSearchableId()];
     }
 
     /**
@@ -183,6 +176,14 @@ trait Searchable
     public function getSearchableSortableAttributes(): array
     {
         return [];
+    }
+
+    /**
+     * Get attributes Meilisearch may return to search callers.
+     */
+    public function getSearchableDisplayedAttributes(): array
+    {
+        return array_keys($this->toSearchableArray());
     }
 
     /**

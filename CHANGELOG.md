@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **HTTP search is deny-by-default.** `MEILISEARCH_ALLOWED_INDEXES` now defaults to an empty list, and private indexes require a configured server-side filter unless explicitly listed in `http_search.public_indexes`.
 - **Caller-controlled search parameters are now bounded.** Unsupported search params are rejected, caller filters are combined with the configured server-side scope filter, and `attributesToRetrieve` is limited to configured retrievable attributes.
 
+### Changed
+- **Search indexing now defaults to the primary identifier only.** Models must override `toSearchableArray()` to expose searchable fields intentionally; index settings can derive displayed attributes from `getSearchableDisplayedAttributes()`.
+
 ## [1.4.1] - 2026-06-05 — @queryParam Route Docs
 
 ### Changed
