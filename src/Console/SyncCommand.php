@@ -18,6 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SyncCommand extends BaseCommand
 {
     use ResolvesModelClass;
+
     protected function configure(): void
     {
         $this->setDescription('Sync index settings from models')

@@ -20,7 +20,8 @@ class MeilisearchEngine implements SearchEngineInterface
         private readonly MeilisearchClient $client,
         private readonly IndexManager $indexManager,
         private readonly BatchIndexer $batchIndexer
-    ) {}
+    ) {
+    }
 
     /**
      * Index a single model.

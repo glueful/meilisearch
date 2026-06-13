@@ -32,7 +32,11 @@ class QueuedSyncListener
                 'model' => get_class($model),
                 'id' => $model->getSearchableId(),
                 'index' => $model->searchableAs(),
-            ], config($this->context, 'meilisearch.queue.queue', 'search'), config($this->context, 'meilisearch.queue.connection', null));
+            ], config($this->context, 'meilisearch.queue.queue', 'search'), config(
+                $this->context,
+                'meilisearch.queue.connection',
+                null
+            ));
         });
     }
 }

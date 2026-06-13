@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Glueful\Extensions\Meilisearch\Controllers;
 
 use Glueful\Bootstrap\ApplicationContext;
+use Glueful\Auth\UserIdentity;
 use Glueful\Extensions\Meilisearch\Client\MeilisearchClient;
+use Glueful\Extensions\Meilisearch\Security\SearchRequestPolicy;
 use Glueful\Http\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -29,7 +31,7 @@ class SearchController
         $params = $request->query->all();
         unset($params['index'], $params['q']);
 
-        return $this->performSearch($index, $query, $params);
+        return $this->performSearch($request, $index, $query, $params);
     }
 
     public function searchIndex(Request $request): Response
@@ -44,14 +46,24 @@ class SearchController
         $params = $request->query->all();
         unset($params['q']);
 
-        return $this->performSearch($index, $query, $params);
+        return $this->performSearch($request, $index, $query, $params);
     }
 
-    private function performSearch(string $index, string $query, array $params): Response
+    private function performSearch(Request $request, string $index, string $query, array $params): Response
     {
+        $user = $request->attributes->get('auth.user');
+        $decision = SearchRequestPolicy::fromContext($this->context)->prepare(
+            $index,
+            $params,
+            $user instanceof UserIdentity ? $user : null
+        );
+        if (!$decision->allowed) {
+            return Response::error($decision->message, $decision->status);
+        }
+
         $prefixedIndex = $this->client->prefixedIndexName($index);
         /** @var \Meilisearch\Search\SearchResult $result */
-        $result = $this->client->index($prefixedIndex)->search($query, $params);
+        $result = $this->client->index($prefixedIndex)->search($query, $decision->params);
         return Response::success($result->toArray());
     }
 
@@ -91,10 +103,14 @@ class SearchController
         return null;
     }
 
-    private function getAllowedIndexes(): ?array
+    private function getAllowedIndexes(): array
     {
         $allowed = function_exists('config')
-            ? config($this->context, 'meilisearch.allowed_indexes', null)
+            ? config(
+                $this->context,
+                'meilisearch.http_search.allowed_indexes',
+                config($this->context, 'meilisearch.allowed_indexes', [])
+            )
             : null;
 
         if (is_string($allowed)) {
@@ -102,9 +118,9 @@ class SearchController
         }
 
         if (is_array($allowed)) {
-            return $allowed === [] ? null : $allowed;
+            return $allowed;
         }
 
-        return null;
+        return [];
     }
 }

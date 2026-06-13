@@ -70,7 +70,9 @@ class SearchQuery
             '<' => "{$attribute} < " . $this->formatValue($value),
             '<=' => "{$attribute} <= " . $this->formatValue($value),
             'IN' => "{$attribute} IN [" . implode(', ', array_map([$this, 'formatValue'], (array) $value)) . "]",
-            'NOT IN' => "{$attribute} NOT IN [" . implode(', ', array_map([$this, 'formatValue'], (array) $value)) . "]",
+            'NOT IN' => "{$attribute} NOT IN ["
+                . implode(', ', array_map([$this, 'formatValue'], (array) $value))
+                . "]",
             'EXISTS' => "{$attribute} EXISTS",
             'NOT EXISTS' => "{$attribute} NOT EXISTS",
             'IS NULL' => "{$attribute} IS NULL",

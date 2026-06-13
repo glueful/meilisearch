@@ -187,6 +187,14 @@ class IndexManager
             }
         }
 
+        // Limit retrievable fields to the model's explicit search document surface.
+        if (method_exists($model, 'getSearchableDisplayedAttributes')) {
+            $displayed = $model->getSearchableDisplayedAttributes();
+            if ($displayed !== []) {
+                $settings['displayedAttributes'] = $displayed;
+            }
+        }
+
         // Get custom settings if method exists
         if (method_exists($model, 'searchableSettings')) {
             $customSettings = $model->searchableSettings();
