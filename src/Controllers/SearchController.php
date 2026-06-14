@@ -9,6 +9,9 @@ use Glueful\Auth\UserIdentity;
 use Glueful\Extensions\Meilisearch\Client\MeilisearchClient;
 use Glueful\Extensions\Meilisearch\Security\SearchRequestPolicy;
 use Glueful\Http\Response;
+use Glueful\Routing\Attributes\ApiOperation;
+use Glueful\Routing\Attributes\ApiResponse;
+use Glueful\Routing\Attributes\QueryParam;
 use Symfony\Component\HttpFoundation\Request;
 
 class SearchController
@@ -19,6 +22,38 @@ class SearchController
     ) {
     }
 
+    /**
+     * Universal search across an allowlisted index.
+     */
+    #[ApiOperation(
+        summary: 'Universal search',
+        description: 'Performs a search query across an explicitly allowlisted index. The route '
+            . 'requires the `meilisearch.search` permission, applies the configured server-side '
+            . 'scope filter, and only accepts configured safe search parameters.',
+        tags: ['Search'],
+    )]
+    #[QueryParam('index', 'string', description: 'Index name to search (without prefix)', required: true)]
+    #[QueryParam('q', 'string', description: 'Search query string (empty string returns all documents)')]
+    #[QueryParam(
+        'filter',
+        'string',
+        description: 'Filter expression using Meilisearch syntax; combined with the server-side scope filter'
+    )]
+    #[QueryParam('facets', 'string', description: 'Attributes to get facet distribution for')]
+    #[QueryParam('sort', 'string', description: 'Attributes to sort by (format: attribute:direction)')]
+    #[QueryParam('limit', 'integer', description: 'Maximum number of results to return (default: 20)')]
+    #[QueryParam('offset', 'integer', description: 'Number of results to skip for pagination')]
+    #[QueryParam(
+        'attributesToRetrieve',
+        'string',
+        description: 'Configured retrievable attributes to include in results'
+    )]
+    #[QueryParam('attributesToHighlight', 'string', description: 'Attributes to highlight matches in')]
+    #[ApiResponse(200, description: 'Search results retrieved successfully')]
+    #[ApiResponse(400, description: 'Missing index parameter')]
+    #[ApiResponse(401, description: 'Authentication required')]
+    #[ApiResponse(403, description: 'Search permission or scope required')]
+    #[ApiResponse(404, description: 'Index not found')]
     public function search(Request $request): Response
     {
         $index = (string) $request->query->get('index', '');
@@ -34,6 +69,36 @@ class SearchController
         return $this->performSearch($request, $index, $query, $params);
     }
 
+    /**
+     * Search a specific allowlisted index.
+     */
+    #[ApiOperation(
+        summary: 'Search specific index',
+        description: 'Performs a search query on a specific allowlisted index. The route requires '
+            . 'the `meilisearch.search` permission, applies the configured server-side scope '
+            . 'filter, and only accepts configured safe search parameters.',
+        tags: ['Search'],
+    )]
+    #[QueryParam('q', 'string', description: 'Search query string (empty string returns all documents)')]
+    #[QueryParam(
+        'filter',
+        'string',
+        description: 'Filter expression using Meilisearch syntax; combined with the server-side scope filter'
+    )]
+    #[QueryParam('facets', 'string', description: 'Attributes to get facet distribution for')]
+    #[QueryParam('sort', 'string', description: 'Attributes to sort by (format: attribute:direction)')]
+    #[QueryParam('limit', 'integer', description: 'Maximum number of results to return (default: 20)')]
+    #[QueryParam('offset', 'integer', description: 'Number of results to skip for pagination')]
+    #[QueryParam(
+        'attributesToRetrieve',
+        'string',
+        description: 'Configured retrievable attributes to include in results'
+    )]
+    #[QueryParam('attributesToHighlight', 'string', description: 'Attributes to highlight matches in')]
+    #[ApiResponse(200, description: 'Search results retrieved successfully')]
+    #[ApiResponse(401, description: 'Authentication required')]
+    #[ApiResponse(403, description: 'Search permission or scope required')]
+    #[ApiResponse(404, description: 'Index not found')]
     public function searchIndex(Request $request): Response
     {
         $index = (string) $request->attributes->get('index', '');
@@ -67,6 +132,18 @@ class SearchController
         return Response::success($result->toArray());
     }
 
+    /**
+     * Get index status for all Meilisearch indexes.
+     */
+    #[ApiOperation(
+        summary: 'Get index status',
+        description: 'Retrieves status information for all Meilisearch indexes including primary keys, '
+            . 'creation dates, and update timestamps. Requires admin privileges.',
+        tags: ['Search Admin'],
+    )]
+    #[ApiResponse(200, description: 'Index status retrieved successfully')]
+    #[ApiResponse(401, description: 'Authentication required')]
+    #[ApiResponse(403, description: 'Admin privileges required')]
     public function status(): Response
     {
         /** @var \Meilisearch\Contracts\IndexesResults $result */
