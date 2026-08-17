@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Declares the schema-free Glueful manifest (migrations: none, requires.extensions); requires
+  framework >=1.79.0 for schema-on-enable participation.
+
+
 ## [1.6.0] - 2026-06-14
 
 ### Changed
