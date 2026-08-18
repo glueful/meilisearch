@@ -74,8 +74,13 @@ class IndexCommand extends BaseCommand
                 $query->chunk($batchSize, function (iterable $models) use ($batchIndexer) {
                     $searchables = [];
                     foreach ($models as $model) {
+                        if (!is_object($model)) {
+                            continue;
+                        }
                         if (method_exists($model, 'shouldBeSearchable') && !$model->shouldBeSearchable()) {
-                            $model->searchableRemove();
+                            if (method_exists($model, 'searchableRemove')) {
+                                $model->searchableRemove();
+                            }
                             continue;
                         }
                         $searchables[] = $model;
@@ -88,8 +93,13 @@ class IndexCommand extends BaseCommand
                 $models = $query->get();
                 $searchables = [];
                 foreach ($models as $model) {
+                    if (!is_object($model)) {
+                        continue;
+                    }
                     if (method_exists($model, 'shouldBeSearchable') && !$model->shouldBeSearchable()) {
-                        $model->searchableRemove();
+                        if (method_exists($model, 'searchableRemove')) {
+                            $model->searchableRemove();
+                        }
                         continue;
                     }
                     $searchables[] = $model;
@@ -102,8 +112,13 @@ class IndexCommand extends BaseCommand
             $models = $modelClass::all($this->getContext());
             $searchables = [];
             foreach ($models as $model) {
+                if (!is_object($model)) {
+                    continue;
+                }
                 if (method_exists($model, 'shouldBeSearchable') && !$model->shouldBeSearchable()) {
-                    $model->searchableRemove();
+                    if (method_exists($model, 'searchableRemove')) {
+                        $model->searchableRemove();
+                    }
                     continue;
                 }
                 $searchables[] = $model;
