@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'search:status',
+    name: 'meilisearch:status',
     description: 'Show Meilisearch index status'
 )]
 class StatusCommand extends BaseCommand

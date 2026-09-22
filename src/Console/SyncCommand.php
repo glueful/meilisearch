@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'search:sync',
+    name: 'meilisearch:sync',
     description: 'Sync index settings from models'
 )]
 class SyncCommand extends BaseCommand

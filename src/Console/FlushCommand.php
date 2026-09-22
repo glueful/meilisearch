@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'search:flush',
+    name: 'meilisearch:flush',
     description: 'Flush search indexes'
 )]
 class FlushCommand extends BaseCommand

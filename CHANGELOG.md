@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-22
+
+### Changed (breaking)
+- **The console commands are renamed into the extension's own namespace**: `search:index`,
+  `search:sync`, `search:flush`, `search:status` and `search:search` are now `meilisearch:index`,
+  `meilisearch:sync`, `meilisearch:flush`, `meilisearch:status` and `meilisearch:search`. The
+  generic `search:` namespace belongs to the app: Thallo's own `search:status` took the name, and
+  whichever registered last silently replaced the other. Update scripts and cron lines that call
+  the old names. This is a major release.
+
 ## [1.7.0] - 2026-08-17
 
 ### Added
