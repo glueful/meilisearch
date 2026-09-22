@@ -49,7 +49,7 @@
             "name": "Meilisearch",
             "displayName": "Meilisearch Search",
             "description": "Full-text search powered by Meilisearch",
-            "version": "1.7.0",
+            "version": "2.0.0",
             "categories": [
                 "search",
                 "database"

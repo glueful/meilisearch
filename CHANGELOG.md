@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-22
+
 ### Changed (breaking)
 - **The console commands are renamed into the extension's own namespace**: `search:index`,
   `search:sync`, `search:flush`, `search:status` and `search:search` are now `meilisearch:index`,
