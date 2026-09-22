@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'search:index',
+    name: 'meilisearch:index',
     description: 'Index searchable models'
 )]
 class IndexCommand extends BaseCommand

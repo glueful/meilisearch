@@ -489,65 +489,65 @@ $manager->deleteIndex('posts');
 
 ```bash
 # Index all records for a model
-php glueful search:index --model=App\\Models\\Post
+php glueful meilisearch:index --model=App\\Models\\Post
 
 # Index specific IDs
-php glueful search:index --model=App\\Models\\Post --id=uuid1,uuid2,uuid3
+php glueful meilisearch:index --model=App\\Models\\Post --id=uuid1,uuid2,uuid3
 
 # Fresh index (clear before indexing)
-php glueful search:index --model=App\\Models\\Post --fresh
+php glueful meilisearch:index --model=App\\Models\\Post --fresh
 ```
 
 ### Check Index Status
 
 ```bash
 # Show all indexes
-php glueful search:status
+php glueful meilisearch:status
 
 # Show specific index stats
-php glueful search:status posts
+php glueful meilisearch:status posts
 
 # Output as JSON
-php glueful search:status --json
+php glueful meilisearch:status --json
 ```
 
 ### Sync Index Settings
 
 ```bash
 # Sync settings from model to Meilisearch
-php glueful search:sync --model=App\\Models\\Post
+php glueful meilisearch:sync --model=App\\Models\\Post
 
 # Dry run (show settings without applying)
-php glueful search:sync --model=App\\Models\\Post --dry-run
+php glueful meilisearch:sync --model=App\\Models\\Post --dry-run
 ```
 
 ### Flush Index
 
 ```bash
 # Flush specific index
-php glueful search:flush posts
+php glueful meilisearch:flush posts
 
 # Flush all indexes
-php glueful search:flush --all
+php glueful meilisearch:flush --all
 
 # Skip confirmation
-php glueful search:flush posts --force
+php glueful meilisearch:flush posts --force
 ```
 
 ### Debug Search
 
 ```bash
 # Search an index
-php glueful search:search posts "search query"
+php glueful meilisearch:search posts "search query"
 
 # With filters
-php glueful search:search posts "query" --filter="status = published"
+php glueful meilisearch:search posts "query" --filter="status = published"
 
 # Limit results
-php glueful search:search posts "query" --limit=5
+php glueful meilisearch:search posts "query" --limit=5
 
 # Raw JSON output
-php glueful search:search posts "query" --raw
+php glueful meilisearch:search posts "query" --raw
 ```
 
 ## API Endpoints
@@ -637,25 +637,25 @@ This ensures consistent behavior across all searchable models and proper documen
 
 1. **Models not appearing in search**: Ensure `shouldBeSearchable()` returns true and the model was saved after adding the trait.
 
-2. **Filters not working**: Verify the attribute is listed in `getSearchableFilterableAttributes()` and run `php glueful search:sync`.
+2. **Filters not working**: Verify the attribute is listed in `getSearchableFilterableAttributes()` and run `php glueful meilisearch:sync`.
 
-3. **Sort not working**: Verify the attribute is listed in `getSearchableSortableAttributes()` and run `php glueful search:sync`.
+3. **Sort not working**: Verify the attribute is listed in `getSearchableSortableAttributes()` and run `php glueful meilisearch:sync`.
 
 4. **Connection errors**: Check `MEILISEARCH_HOST` and `MEILISEARCH_KEY` are correct. Verify Meilisearch is running.
 
-5. **Index not found**: The extension auto-creates indexes on first use. If issues persist, manually create with `search:index --fresh`.
+5. **Index not found**: The extension auto-creates indexes on first use. If issues persist, manually create with `meilisearch:index --fresh`.
 
 ### Debugging
 
 ```bash
 # Check Meilisearch connection and indexes
-php glueful search:status
+php glueful meilisearch:status
 
 # Test search directly
-php glueful search:search posts "test query" --raw
+php glueful meilisearch:search posts "test query" --raw
 
 # Verify index settings match model
-php glueful search:sync --model=App\\Models\\Post --dry-run
+php glueful meilisearch:sync --model=App\\Models\\Post --dry-run
 ```
 
 ## License
